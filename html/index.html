@@ -1,83 +1,140 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FedEx Auth Experience</title>
-  <link rel="stylesheet" href="../css/base.css" />
-</head>
-<body>
-  <main class="auth-shell">
-    <section class="card">
-      <header class="card-header">
-        <div class="logo-mark" role="img" aria-label="FedEx">FX</div>
-        <div>
-          <div class="card-title">Welcome Back</div>
-          <p class="card-subtitle">Sign in to manage deliveries and notifications.</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FedEx Login</title>
+    <link rel="stylesheet" href="../css/login.css" />
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <input type="checkbox" id="theme-toggle" />
+      <label for="theme-toggle">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-text">Dark mode</span>
+      </label>
+    </div>
+    <main class="page">
+      <section class="auth-card">
+        <div class="panel-left">
+          <img
+            class="logo"
+            src="../images/icons8-fedex-100.png"
+            alt="FedEx logo"
+          />
+          <h1 class="card-title">Welcome back</h1>
+          <p class="card-subtitle">
+            Sign in to track shipments, manage alerts, and update delivery
+            preferences.
+          </p>
+          <ul class="feature-list">
+            <li>Real-time tracking</li>
+            <li>Secure delivery notes</li>
+            <li>Instant status alerts</li>
+          </ul>
         </div>
-      </header>
-      <form class="form-grid" action="#" method="post">
-        <label class="icon-accent">
-          Email address
-          <input class="input" type="email" name="email" placeholder="you@example.com" required />
-        </label>
-        <label class="icon-accent">
-          Password
-          <input class="input" type="password" name="password" placeholder="••••••••" required />
-        </label>
-        <div class="footer-links">
-          <label class="helper-text">
-            <input type="checkbox" /> Keep me signed in
-          </label>
-          <a class="link" href="#">Forgot password?</a>
+        <div class="panel-right">
+          <form class="form-block" action="#" method="post">
+            <div class="error-banner" role="alert">
+              Incorrect email or password. Please try again.
+            </div>
+            <label class="field">
+              <span>Email address</span>
+              <input
+                class="input"
+                type="email"
+                name="email"
+                placeholder="you@company.com"
+                required
+              />
+            </label>
+            <label class="field password-field">
+              <span>Password</span>
+              <div class="password-wrapper">
+                <input
+                  class="input"
+                  type="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  class="toggle-password"
+                  type="button"
+                  aria-label="Show password"
+                ></button>
+              </div>
+            </label>
+            <div class="form-row">
+              <label class="check">
+                <input type="checkbox" name="remember" />
+                <span>Keep me signed in</span>
+              </label>
+              <a class="link" href="forgot-password.html">Forgot password?</a>
+            </div>
+            <button class="button button-primary" type="submit">Login</button>
+            <p class="helper-text">
+              Do not have an account?
+              <a class="link" href="register.html">Register</a>
+            </p>
+          </form>
         </div>
-        <button class="button button-primary" type="submit">Sign In</button>
-      </form>
-      <p class="helper-text">Using a shared device? <a class="link" href="#">Use single-session login</a>.</p>
-    </section>
+      </section>
+    </main>
+    <script>
+      const form = document.querySelector(".form-block");
+      if (form) {
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          form.classList.add("is-error");
+        });
+        form.addEventListener("input", () => {
+          form.classList.remove("is-error");
+        });
+      }
 
-    <section class="card">
-      <header class="card-header">
-        <div class="logo-mark" role="img" aria-label="FedEx">FX</div>
-        <div>
-          <div class="card-title">Create Account</div>
-          <p class="card-subtitle">Set up secure access for shipping and tracking.</p>
-        </div>
-      </header>
-      <form class="form-grid two-columns" action="#" method="post">
-        <label class="icon-accent">
-          First name
-          <input class="input" type="text" name="firstName" placeholder="Alex" required />
-        </label>
-        <label class="icon-accent">
-          Last name
-          <input class="input" type="text" name="lastName" placeholder="Morgan" required />
-        </label>
-        <label class="icon-accent">
-          Email address
-          <input class="input" type="email" name="newEmail" placeholder="you@example.com" required />
-        </label>
-        <label class="icon-accent">
-          Phone number
-          <input class="input" type="tel" name="phone" placeholder="(555) 555-1234" />
-        </label>
-        <label class="icon-accent">
-          Password
-          <input class="input" type="password" name="newPassword" placeholder="••••••••" required />
-        </label>
-        <label class="icon-accent">
-          Confirm password
-          <input class="input" type="password" name="confirmPassword" placeholder="••••••••" required />
-        </label>
-        <button class="button button-primary" type="submit">Create Account</button>
-        <button class="button button-secondary" type="button">Use Single Sign-On</button>
-      </form>
-      <div class="tags">
-        <span class="tag">2FA Ready</span>
-        <span class="tag">Secure Vault</span>
-        <span class="tag">24/7 Support</span>
-      </div>
-    </section>
-  </main>
-</body>
+      const toggleButtons = document.querySelectorAll(".toggle-password");
+      toggleButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const field = button.closest(".password-field");
+          if (!field) return;
+          const input = field.querySelector("input");
+          if (!input) return;
+          const isHidden = input.type === "password";
+          input.type = isHidden ? "text" : "password";
+          button.setAttribute(
+            "aria-label",
+            isHidden ? "Hide password" : "Show password"
+          );
+        });
+      });
+
+      const themeToggle = document.querySelector("#theme-toggle");
+      const root = document.documentElement;
+      let storedTheme = null;
+      try {
+        storedTheme = localStorage.getItem("theme");
+      } catch (error) {
+        storedTheme = null;
+      }
+      const prefersDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+      if (storedTheme) {
+        root.setAttribute("data-theme", storedTheme);
+      }
+      if (themeToggle) {
+        themeToggle.checked = initialTheme === "dark";
+        themeToggle.addEventListener("change", () => {
+          const nextTheme = themeToggle.checked ? "dark" : "light";
+          root.setAttribute("data-theme", nextTheme);
+          try {
+            localStorage.setItem("theme", nextTheme);
+          } catch (error) {
+            return;
+          }
+        });
+      }
+    </script>
+  </body>
 </html>

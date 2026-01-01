@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FedEx Two-Factor Authentication</title>
+  <link rel="stylesheet" href="../css/two-factor.css" />
+</head> 
+<body>
+  <div class="theme-toggle">
+    <input type="checkbox" id="theme-toggle" />
+    <label for="theme-toggle">
+      <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      <span class="toggle-text">Dark mode</span>
+    </label>
+  </div>
+  <main class="page">
+    <section class="auth-card">
+      <div class="panel-left">
+        <img class="logo" src="../images/icons8-fedex-100.png" alt="FedEx logo" />
+        <h1 class="card-title">Two-factor authentication</h1>
+        <p class="card-subtitle">Enter the 6-digit code sent to your email or phone.</p>
+        <div class="info-pill">Codes expire in 10 minutes.</div>
+      </div>
+      <div class="panel-right">
+        <form class="form-block" action="#" method="post">
+          <p class="instruction">Enter the 6-digit code sent to your email/phone.</p>
+          <div class="code-inputs" role="group" aria-label="Verification code">
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 1" required />
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 2" required />
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 3" required />
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 4" required />
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 5" required />
+            <input class="code-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" aria-label="Digit 6" required />
+          </div>
+          <button class="button button-primary" type="submit">Confirm</button>
+          <p class="helper-text">
+            <a class="link" href="#" id="resend-link">Resend code</a>
+            <span class="countdown">in <span class="timer" aria-live="polite"></span>s</span>
+          </p>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script>
+    const timer = document.querySelector(".timer");
+    const resendLink = document.querySelector("#resend-link");
+    let remaining = 30;
+    let intervalId = null;
+
+    const startTimer = () => {
+      if (!timer) return;
+      clearInterval(intervalId);
+      timer.textContent = remaining;
+      intervalId = setInterval(() => {
+        remaining -= 1;
+        if (remaining <= 0) {
+          remaining = 0;
+          timer.textContent = remaining;
+          clearInterval(intervalId);
+          return;
+        }
+        timer.textContent = remaining;
+      }, 1000);
+    };
+
+    if (timer) {
+      startTimer();
+    }
+
+    if (resendLink) {
+      resendLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (remaining === 0) {
+          remaining = 30;
+          startTimer();
+        }
+      });
+    }
+
+    const themeToggle = document.querySelector("#theme-toggle");
+    const root = document.documentElement;
+    let storedTheme = null;
+    try {
+      storedTheme = localStorage.getItem("theme");
+    } catch (error) {
+      storedTheme = null;
+    }
+    const prefersDark = window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+    if (storedTheme) {
+      root.setAttribute("data-theme", storedTheme);
+    }
+    if (themeToggle) {
+      themeToggle.checked = initialTheme === "dark";
+      themeToggle.addEventListener("change", () => {
+        const nextTheme = themeToggle.checked ? "dark" : "light";
+        root.setAttribute("data-theme", nextTheme);
+        try {
+          localStorage.setItem("theme", nextTheme);
+        } catch (error) {
+          return;
+        }
+      });
+    }
+  </script>
+</body>
+</html>

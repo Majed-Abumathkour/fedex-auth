@@ -1,0 +1,241 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FedEx Register</title>
+    <link rel="stylesheet" href="../css/register.css" />
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <input type="checkbox" id="theme-toggle" />
+      <label for="theme-toggle">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+        <span class="toggle-text">Dark mode</span>
+      </label>
+    </div>
+    <main class="page">
+      <section class="auth-card">
+        <header class="card-header">
+          <img
+            class="logo"
+            src="../images/icons8-fedex-100.png"
+            alt="FedEx logo"
+          />
+          <div>
+            <h1 class="card-title">Welcome to FedEx</h1>
+            <p class="card-subtitle">
+              Create your secure account to manage shipments and billing.
+            </p>
+          </div>
+        </header>
+        <form class="form-block register-form" action="#" method="post">
+          <div class="form-columns">
+            <fieldset class="form-column">
+              <legend>Personal information</legend>
+              <label class="field">
+                <span>Username</span>
+                <input
+                  class="input"
+                  type="text"
+                  name="username"
+                  placeholder="fedex_user"
+                  required
+                />
+              </label>
+              <label class="field">
+                <span>Full name</span>
+                <input
+                  class="input"
+                  type="text"
+                  name="fullName"
+                  placeholder="Ava Carter"
+                  required
+                />
+              </label>
+            </fieldset>
+            <fieldset class="form-column">
+              <legend>Account information</legend>
+              <label class="field">
+                <span>Email address</span>
+                <input
+                  class="input"
+                  type="email"
+                  name="email"
+                  placeholder="you@company.com"
+                  required
+                />
+              </label>
+              <label class="field password-field">
+                <span>Password</span>
+                <div class="password-wrapper">
+                  <input
+                    class="input"
+                    type="password"
+                    name="password"
+                    placeholder="Create a password"
+                    minlength="8"
+                    required
+                  />
+                  <button
+                    class="toggle-password"
+                    type="button"
+                    aria-label="Show password"
+                  ></button>
+                </div>
+              </label>
+              <label class="field password-field">
+                <span>Confirm password</span>
+                <div class="password-wrapper">
+                  <input
+                    class="input"
+                    type="password"
+                    name="confirmPassword"
+                    placeholder="Repeat password"
+                    minlength="8"
+                    required
+                  />
+                  <button
+                    class="toggle-password"
+                    type="button"
+                    aria-label="Show password"
+                  ></button>
+                </div>
+              </label>
+              <div class="strength-meter medium" aria-live="polite">
+                <span class="strength-label">Password strength</span>
+                <div class="strength-bars">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span class="strength-text">Medium</span>
+              </div>
+            </fieldset>
+          </div>
+          <div class="terms-row">
+            <input
+              class="terms-check"
+              type="checkbox"
+              id="terms-accept"
+              required
+            />
+            <label for="terms-accept">I agree to the</label>
+            <a class="link" href="#terms-modal">Terms & Conditions</a>
+          </div>
+          <div class="form-actions">
+            <button class="button button-primary" type="submit">
+              Register
+            </button>
+            <p class="helper-text">
+              Already have an account?
+              <a class="link" href="index.html">Login</a>
+            </p>
+          </div>
+        </form>
+      </section>
+    </main>
+    <div id="terms-modal" class="modal">
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="terms-title"
+      >
+        <h2 id="terms-title">Terms & Conditions</h2>
+        <p>
+          By creating an account you agree to receive shipment notifications,
+          security updates, and service emails.
+        </p>
+        <p>
+          Your data is handled according to the FedEx privacy policy and is
+          never sold to third parties.
+        </p>
+        <a class="button button-secondary" href="#">Close</a>
+      </div>
+    </div>
+    <script>
+      const toggleButtons = document.querySelectorAll(".toggle-password");
+      toggleButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const field = button.closest(".password-field");
+          if (!field) return;
+          const input = field.querySelector("input");
+          if (!input) return;
+          const isHidden = input.type === "password";
+          input.type = isHidden ? "text" : "password";
+          button.setAttribute(
+            "aria-label",
+            isHidden ? "Hide password" : "Show password"
+          );
+        });
+      });
+
+      const strengthMeter = document.querySelector(".strength-meter");
+      const strengthText = strengthMeter?.querySelector(".strength-text");
+      const passwordInput = document.querySelector('input[name="password"]');
+      const strengthClasses = ["weak", "medium", "strong"];
+
+      const updateStrength = () => {
+        if (!strengthMeter || !strengthText || !passwordInput) return;
+        const value = passwordInput.value;
+        strengthMeter.classList.remove(...strengthClasses);
+
+        if (!value) {
+          strengthText.textContent = "Password strength";
+          return;
+        }
+
+        let score = 0;
+        if (value.length >= 8) score += 1;
+        if (value.length >= 12) score += 1;
+        if (/[a-z]/.test(value)) score += 1;
+        if (/[A-Z]/.test(value)) score += 1;
+        if (/\d/.test(value)) score += 1;
+        if (/[^A-Za-z0-9]/.test(value)) score += 1;
+
+        let level = "weak";
+        if (score >= 5) {
+          level = "strong";
+        } else if (score >= 3) {
+          level = "medium";
+        }
+
+        strengthMeter.classList.add(level);
+        strengthText.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+      };
+
+      if (passwordInput) {
+        updateStrength();
+        passwordInput.addEventListener("input", updateStrength);
+      }
+
+      const themeToggle = document.querySelector("#theme-toggle");
+      const root = document.documentElement;
+      let storedTheme = null;
+      try {
+        storedTheme = localStorage.getItem("theme");
+      } catch (error) {
+        storedTheme = null;
+      }
+      const prefersDark = window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const initialTheme = storedTheme || (prefersDark ? "dark" : "light");
+      if (storedTheme) {
+        root.setAttribute("data-theme", storedTheme);
+      }
+      if (themeToggle) {
+        themeToggle.checked = initialTheme === "dark";
+        themeToggle.addEventListener("change", () => {
+          const nextTheme = themeToggle.checked ? "dark" : "light";
+          root.setAttribute("data-theme", nextTheme);
+          try {
+            localStorage.setItem("theme", nextTheme);
+          } catch (error) {
+            return;
+          }
+        });
+      }
+    </script>
+  </body>
+</html>
